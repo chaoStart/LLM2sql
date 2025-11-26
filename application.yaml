@@ -1,0 +1,218 @@
+openai:
+      config:
+          api_key: ${OPENAI_API_KEY}
+#          api_key: sk-Eudk2t3AxLlriIEiRvK9ePqOv0jCMOUOFrQFyy4hZLaBaNVk
+          model_name: gpt-4o-mini
+#          model_name: kimi-latest
+          temperature: 0.1
+          url:  http://langchain4j.dev/demo/openai/v1/
+#          url:  https://api.moonshot.cn/v1/
+      prompt:
+            template: |
+                  #Role: You are a data expert who communicates with business users everyday.
+                  #Task: You will be provided with a question asked by a user and the relevant result data queried from the databases, please interpret the data and organize a brief answer.
+                  #Rules:
+                  1. ALWAYS respond in the same language as the `#Question`.
+                  2. ALWAYS reference some key data in the `#Answer`.
+            question: "从空气质量等方面帮我分析一下这段数据"
+            data-table: |
+                  //数据
+                  [
+                      {
+                          "Date": "2025-11-07",
+                          "CO_24h": "0.9",
+                          "NO2_24h": "35",
+                          "O3_8h_24h": "29",
+                          "PM10_24h": "72",
+                          "PM2_5_24h": "52",
+                          "SO2_24h": "3",
+                          "AQI": "72",
+                          "PrimaryPollutant": "细颗粒物(PM2.5)",
+                          "Measure": "极少数异常敏感人群应减少户外活动",
+                          "Unheathful": "空气质量可接受，但某些污染物可能对极少数异常敏感人群健康有较弱影响"
+                      },
+                     {
+                        "Date": "2025-11-06",
+                        "CO_24h": "1.0",
+                        "NO2_24h": "42",
+                        "O3_8h_24h": "43",
+                        "PM10_24h": "159",
+                        "PM2_5_24h": "118",
+                        "SO2_24h": "4",
+                        "AQI": "155",
+                        "PrimaryPollutant": "细颗粒物(PM2.5)",
+                        "Measure": "儿童、老年人及心脏病、呼吸系统疾病患者避免长时间、高强度的户外锻练，一般人群适量减少户外运动",
+                        "Unheathful": "进一步加剧易感人群症状，可能对健康人群心脏、呼吸系统有影响"
+                    },
+                    {
+                          "Date": "2025-11-05",
+                          "CO_24h": "1.0",
+                          "NO2_24h": "52",
+                          "O3_8h_24h": "50",
+                          "PM10_24h": "178",
+                          "PM2_5_24h": "127",
+                          "SO2_24h": "4",
+                          "AQI": "168",
+                          "PrimaryPollutant": "细颗粒物(PM2.5)",
+                          "Measure": "儿童、老年人及心脏病、呼吸系统疾病患者避免长时间、高强度的户外锻练，一般人群适量减少户外运动",
+                          "Unheathful": "进一步加剧易感人群症状，可能对健康人群心脏、呼吸系统有影响"
+                    },
+                    {
+                          "Date": "2025-11-04",
+                          "CO_24h": "0.6",
+                          "NO2_24h": "45",
+                          "O3_8h_24h": "61",
+                          "PM10_24h": "87",
+                          "PM2_5_24h": "53",
+                          "SO2_24h": "4",
+                          "AQI": "73",
+                          "PrimaryPollutant": "细颗粒物(PM2.5)",
+                          "Measure": "极少数异常敏感人群应减少户外活动",
+                          "Unheathful": "空气质量可接受，但某些污染物可能对极少数异常敏感人群健康有较弱影响"
+                    },
+                    {
+                          "Date": "2025-11-03",
+                          "CO_24h": "0.5",
+                          "NO2_24h": "41",
+                          "O3_8h_24h": "49",
+                          "PM10_24h": "64",
+                          "PM2_5_24h": "32",
+                          "SO2_24h": "4",
+                          "AQI": "57",
+                          "PrimaryPollutant": "颗粒物(PM10)",
+                          "Measure": "极少数异常敏感人群应减少户外活动",
+                          "Unheathful": "空气质量可接受，但某些污染物可能对极少数异常敏感人群健康有较弱影响"
+                    },
+                    {
+                          "Date": "2025-11-02",
+                          "CO_24h": "0.3",
+                          "NO2_24h": "21",
+                          "O3_8h_24h": "58",
+                          "PM10_24h": "18",
+                          "PM2_5_24h": "7",
+                          "SO2_24h": "3",
+                          "AQI": "29",
+                          "PrimaryPollutant": "—",
+                          "Measure": "各类人群可正常活动",
+                          "Unheathful": "空气质量令人满意，基本无空气污染"
+                    },
+                    {
+                          "Date": "2025-11-01",
+                          "CO_24h": "0.3",
+                          "NO2_24h": "20",
+                          "O3_8h_24h": "71",
+                          "PM10_24h": "27",
+                          "PM2_5_24h": "15",
+                          "SO2_24h": "3",
+                          "AQI": "36",
+                          "PrimaryPollutant": "—",
+                          "Measure": "各类人群可正常活动",
+                          "Unheathful": "空气质量令人满意，基本无空气污染"
+                    },
+                    {
+                          "Date": "2025-10-31",
+                          "CO_24h": "0.6",
+                          "NO2_24h": "27",
+                          "O3_8h_24h": "54",
+                          "PM10_24h": "61",
+                          "PM2_5_24h": "41",
+                          "SO2_24h": "3",
+                          "AQI": "58",
+                          "PrimaryPollutant": "细颗粒物(PM2.5)",
+                          "Measure": "极少数异常敏感人群应减少户外活动",
+                          "Unheathful": "空气质量可接受，但某些污染物可能对极少数异常敏感人群健康有较弱影响"
+                    },
+                    {
+                          "Date": "2025-10-30",
+                          "CO_24h": "0.9",
+                          "NO2_24h": "30",
+                          "O3_8h_24h": "42",
+                          "PM10_24h": "131",
+                          "PM2_5_24h": "99",
+                          "SO2_24h": "3",
+                          "AQI": "130",
+                          "PrimaryPollutant": "细颗粒物(PM2.5)",
+                          "Measure": "儿童、老年人及心脏病、呼吸系统疾病患者应减少长时间、高强度的户外锻炼",
+                          "Unheathful": "易感人群症状有轻度加剧，健康人群出现刺激症状"
+                    },
+                    {
+                          "Date": "2025-10-29",
+                          "CO_24h": "0.9",
+                          "NO2_24h": "38",
+                          "O3_8h_24h": "39",
+                          "PM10_24h": "175",
+                          "PM2_5_24h": "136",
+                          "SO2_24h": "3",
+                          "AQI": "180",
+                          "PrimaryPollutant": "细颗粒物(PM2.5)",
+                          "Measure": "儿童、老年人及心脏病、呼吸系统疾病患者避免长时间、高强度的户外锻练，一般人群适量减少户外运动",
+                          "Unheathful": "进一步加剧易感人群症状，可能对健康人群心脏、呼吸系统有影响"
+                    },
+                    {
+                          "Date": "2025-10-28",
+                          "CO_24h": "0.7",
+                          "NO2_24h": "40",
+                          "O3_8h_24h": "57",
+                          "PM10_24h": "106",
+                          "PM2_5_24h": "71",
+                          "SO2_24h": "4",
+                          "AQI": "95",
+                          "PrimaryPollutant": "细颗粒物(PM2.5)",
+                          "Measure": "极少数异常敏感人群应减少户外活动",
+                          "Unheathful": "空气质量可接受，但某些污染物可能对极少数异常敏感人群健康有较弱影响"
+                    },
+                    {
+                          "Date": "2025-10-27",
+                          "CO_24h": "0.4",
+                          "NO2_24h": "32",
+                          "O3_8h_24h": "56",
+                          "PM10_24h": "35",
+                          "PM2_5_24h": "15",
+                          "SO2_24h": "3",
+                          "AQI": "40",
+                          "PrimaryPollutant": "—",
+                          "Measure": "各类人群可正常活动",
+                          "Unheathful": "空气质量令人满意，基本无空气污染"
+                    },
+                    {
+                          "Date": "2025-10-26",
+                          "CO_24h": "0.3",
+                          "NO2_24h": "19",
+                          "O3_8h_24h": "60",
+                          "PM10_24h": "16",
+                          "PM2_5_24h": "10",
+                          "SO2_24h": "3",
+                          "AQI": "30",
+                          "PrimaryPollutant": "—",
+                          "Measure": "各类人群可正常活动",
+                          "Unheathful": "空气质量令人满意，基本无空气污染"
+                    },
+                    {
+                          "Date": "2025-10-25",
+                          "CO_24h": "0.7",
+                          "NO2_24h": "35",
+                          "O3_8h_24h": "60",
+                          "PM10_24h": "116",
+                          "PM2_5_24h": "89",
+                          "SO2_24h": "3",
+                          "AQI": "118",
+                          "PrimaryPollutant": "细颗粒物(PM2.5)",
+                          "Measure": "儿童、老年人及心脏病、呼吸系统疾病患者应减少长时间、高强度的户外锻炼",
+                          "Unheathful": "易感人群症状有轻度加剧，健康人群出现刺激症状"
+                    }
+                  ]
+
+                  //字段描述
+                  Date	string	日期
+                  CO_24h	string	24小时平均 一氧化碳，mg/m3
+                  NO2_24h	string	24小时平均 二氧化氮，mg/m3
+                  O3_8h_24h	string	日8小时最大平均 臭氧，mg/m3
+                  PM10_24h	string	24小时平均 可吸入颗粒物氮，mg/m3
+                  PM2_5_24h	string	24小时平均 细颗粒物，mg/m3
+                  SO2_24h	string	24小时平均 二氧化硫，mg/m3
+                  AQI	string	空气质量指数
+                  Quality	string	空气质量级别
+                  根据AQI指数，分为优（0 ~ 50）、良（51 ~ 100）、轻度污染（101 ~ 150）、中度污染（151 ~ 200）、重度污染（201 ~ 300）和严重污染（>300）六个级别。
+                  PrimaryPollutant	string	首要污染物
+                  Measure	string	建议措施描述
+                  Unheathful	string	健康指引描述
