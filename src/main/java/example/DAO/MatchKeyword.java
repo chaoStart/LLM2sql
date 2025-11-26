@@ -19,34 +19,33 @@ public class MatchKeyword {
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "123456";
 
-    public static List<Term> matchword(String text) {
+    public static Map<String, String> matchword(String text) {
         // 1. 从数据库加载自定义词典
         Keymapper segmentresults = loadCustomWordsFromDatabase();
         Segment viterbi = segmentresults.getSegment();
         List<String> dataset_metric_name = segmentresults.getMetricNames();
         List<String> dataset_metric_description = segmentresults.getDescription();
-
         // 合并两个列表为一个Map
         Map<String, String> metricMap = combineMetrics(dataset_metric_name, dataset_metric_description);
 
-        Segment segment = viterbi.enableCustomDictionary(true).enableCustomDictionaryForcing(true); // ✅ 强制优先使用自定义词典
+        // 2. 将 metric 名称转为 Set 以加速查找
+        Set<String> metricSet = new HashSet<>(metricMap.keySet());
+        // ✅ 强制优先使用自定义词典
+        Segment segment = viterbi.enableCustomDictionary(true).enableCustomDictionaryForcing(true);
+        // 3. 关键：找出 termList 中完全出现在 dataset_metric_name 中的词 ====
         List<Term> termList = segment.seg(text);
-        // ================== 关键：找出 termList 中完全出现在 dataset_metric_name 中的词 ==================
         List<Term> matchedTerms = new ArrayList<>();
-        List<String> matchedWords = new ArrayList<>();   // 如果你只想要字符串，也可以只存这个
-
-        // 方法1：最直观、推荐（把 dataset_metric_name 转成 Set，查找 O(1)）
-        Set<String> metricSet = new HashSet<>(dataset_metric_name);  // 加速查找
+        // 4. 遍历分词结果，找出匹配的指标词及其描述
+        Map<String, String> matchedWordsHash  = new LinkedHashMap<>();
         for (Term term : termList) {
             String word = term.word;
             if (metricSet.contains(word)) {
-                matchedTerms.add(term);
-                matchedWords.add(word);
+                matchedWordsHash.put(word, metricMap.get(word));
             }
         }
         System.out.println("\n=== 在数据库指标词典中成功命中的词 ===");
-        matchedTerms.forEach(term -> System.out.println(term.word + "  (offset=" + term.offset + ")"));
-        return matchedTerms;
+        matchedWordsHash.forEach((key, value) -> System.out.println(key + ": " + value));
+        return matchedWordsHash;
     }
 
     public static Map<String, String> combineMetrics(List<String> metricName, List<String> metricDescription) {
@@ -67,7 +66,7 @@ public class MatchKeyword {
         // 创建分词器并启用自定义词典优先
         DynamicCustomDictionary CreateDictionary = new DynamicCustomDictionary();
 
-        String sql = "SELECT name FROM s2_metric"; // 只读取 name 字段
+        String sql = "SELECT name,description FROM s2_metric"; // 只读取 name 字段
 
         List<String> dataset_metric_name = new ArrayList<>();
         List<String> dataset_metric_description = new ArrayList<>();

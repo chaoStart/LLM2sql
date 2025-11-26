@@ -82,7 +82,7 @@ public class PromptLoader {
         sb.append(getTemplate(templateKey)).append("\n\n");
 
         // 2. 添加 few-shot 示例（你可以控制取前几个）
-        int fewShotCount = Math.min(5, examples.size()); // 比如最多用5个示例
+        int fewShotCount = Math.min(8, examples.size()); // 比如最多用8个示例
         for (int i = 0; i < fewShotCount; i++) {
             Example ex = examples.get(i);
             sb.append("用户问题：").append(ex.getQuestion()).append("\n");

@@ -11,10 +11,7 @@ import com.hankcs.hanlp.seg.common.Term;
 import example.utils.Keymapper;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class SqlDictionary {
     // 数据库连接信息（请根据你的环境修改）
@@ -65,7 +62,7 @@ public class SqlDictionary {
         String sql = "SELECT name FROM s2_metric"; // 只读取 name 字段
 
         List<String> dataset_metric_name = new ArrayList<>();
-
+        List<String> description = new ArrayList<>(Arrays.asList("数据库指标metric对于的描述"));
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
@@ -81,7 +78,7 @@ public class SqlDictionary {
             ViterbiSegment viterbi = new ViterbiSegment();
             viterbi.enableCustomDictionary(CreateDictionary);
 //            return viterbi.enableCustomDictionary(CreateDictionary);
-            return new Keymapper(viterbi, dataset_metric_name);
+            return new Keymapper(viterbi, dataset_metric_name, description);
         } catch (SQLException e) {
             System.err.println("数据库读取失败: " + e.getMessage());
             e.printStackTrace();

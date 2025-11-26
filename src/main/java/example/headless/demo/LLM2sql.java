@@ -12,7 +12,9 @@ import example.utils.Example;
 import example.utils.PromptLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 public class LLM2sql {
@@ -30,30 +32,22 @@ public class LLM2sql {
     static MatchKeyword matchKeyword;
     static String query = "近15天大数据分析部访问次数汇总";
 
-    public static List<Term> get_keyword(String text){
+    public static Map<String, String> get_keyword(String text){
         // 匹配Mysql数据库中的关键词
-        List<Term> keyword_result = matchKeyword.matchword(text);
+        Map<String, String> keyword_result = matchKeyword.matchword(text);
         System.out.println("-----关键词-------");
         System.out.println(keyword_result);
 
-        String metrics_name = keyword_result.get(0).word + "COMMENT" + "description";
-        // 构造当前请求的 Example（不含 sql）
-//        Example current = new Example();
-//        current.setQuestion("近15天超音数访问次数汇总");
-//        current.setSideInfo("CurrentDate=[2025-11-25],[Database does not support with statement]");
-//        String table_name = "超音数数据集";
-//        String metrics =  "<访问次数 COMMENT '一段时间内用户的访问次数'>";
-//        String dimensions = "<数据日期 FORMAT 'yyyy-MM-dd' COMMENT '数据日期'>, <用户名 COMMENT '用户唯一标识'>";
-//        String values = "";
-//        DatabaseSchemaInfo dbSchema = new DatabaseSchemaInfo(table_name, metrics, dimensions, values);
-//        current.setDbSchema(dbSchema);
-
+        List<String> metrics = formatMetricMap(keyword_result);
+        metrics.add(" AGGREGATE 'SUM'");
         Example current_chat = Example.of(
-                "近15天超音数访问次数汇总",
-                "超音数数据集",
-                "<访问次数 COMMENT '一段时间内用户的访问次数'>",
-                "<数据日期 FORMAT 'yyyy-MM-dd' COMMENT '数据日期'>",
-                "",  // values 暂时为空,为值字段; 示例：Values[<用户='jackjchen'>,<用户='robinlee'>]
+//                "近15天超音数访问次数汇总",
+                query,
+                "数字中心平台",
+//                "<访问次数 COMMENT '一段时间内用户的访问次数'>",
+                String.join("", metrics),
+                "<数据日期>",  //示例：Dimensions=[<部门>,<数据日期>]
+                "<部门='大数据分析部'>",  // values 暂时为空,为值字段; 示例：Values[<用户='jackjchen'>,<用户='robinlee'>]
                 ""
         );
 
@@ -89,6 +83,22 @@ public class LLM2sql {
             e.printStackTrace();
         }
         return keyword_result;
+    }
+
+    public static List<String> formatMetricMap(Map<String, String> metricMap) {
+        List<String> result = new ArrayList<>();
+
+        for (Map.Entry<String, String> entry : metricMap.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue() != null ? entry.getValue() : ""; // 防止 value 为 null
+
+            // 拼接成 <key COMMENT 'value'> 格式
+            // 注意：如果 value 中包含单引号，需要转义（可选，根据使用场景）
+            String formatted = "<" + key + " COMMENT '" + value + "'>";
+            result.add(formatted);
+        }
+
+        return result;
     }
 
     public  static void main(String[] args){
